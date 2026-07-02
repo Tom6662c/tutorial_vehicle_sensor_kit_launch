@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(tutorial_vehicle_sensor_kit_launch)
+project(akm_vehicle_sensor_kit_launch)
 
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
