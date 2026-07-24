@@ -1,0 +1,286 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Perception Demo1
+      Splitter Ratio: 0.55
+    Tree Height: 760
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Alpha: 0.35
+      Cell Size: 1
+      Color: 90; 90; 90
+      Enabled: true
+      Name: Ground Grid
+      Plane: XY
+      Plane Cell Count: 40
+      Reference Frame: base_link
+      Value: true
+    - Class: rviz_common/Group
+      Displays:
+        - Class: rviz_default_plugins/RobotModel
+          Alpha: 0.85
+          Description Source: Topic
+          Description Topic:
+            Depth: 1
+            Durability Policy: Transient Local
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /robot_description
+          Enabled: true
+          Name: AKM Vehicle + Sensor Model
+          Visual Enabled: true
+          Collision Enabled: false
+          Value: true
+        - Class: rviz_default_plugins/TF
+          Enabled: true
+          Frame Timeout: 15
+          Marker Scale: 0.35
+          Name: TF
+          Show Arrows: true
+          Show Axes: true
+          Show Names: true
+          Update Interval: 0
+          Value: true
+      Enabled: true
+      Name: Vehicle and TF
+    - Class: rviz_common/Group
+      Displays:
+        - Class: rviz_default_plugins/PointCloud2
+          Alpha: 0.35
+          Autocompute Intensity Bounds: true
+          Axis: Z
+          Channel Name: intensity
+          Color: 180; 180; 180
+          Color Transformer: FlatColor
+          Decay Time: 0
+          Enabled: false
+          Name: 1 Raw WHEELTEC PointCloud
+          Position Transformer: XYZ
+          Selectable: false
+          Size (Pixels): 2
+          Size (m): 0.02
+          Style: Points
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /points_raw
+          Use Fixed Frame: false
+          Value: false
+        - Class: rviz_default_plugins/PointCloud2
+          Alpha: 0.65
+          Autocompute Intensity Bounds: true
+          Axis: Z
+          Channel Name: intensity
+          Color: 190; 205; 215
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Name: 2 PointXYZIRC Adapted PointCloud
+          Position Transformer: XYZ
+          Selectable: false
+          Size (Pixels): 2
+          Size (m): 0.025
+          Style: Points
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /sensing/lidar/concatenated/pointcloud
+          Use Fixed Frame: false
+          Use rainbow: true
+          Value: true
+        - Class: rviz_default_plugins/PointCloud2
+          Alpha: 0.95
+          Axis: Z
+          Channel Name: intensity
+          Color: 255; 65; 54
+          Color Transformer: FlatColor
+          Decay Time: 0
+          Enabled: true
+          Name: 3 Obstacle Segmentation
+          Position Transformer: XYZ
+          Selectable: false
+          Size (Pixels): 4
+          Size (m): 0.05
+          Style: Points
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Best Effort
+            Value: /perception/obstacle_segmentation/pointcloud
+          Use Fixed Frame: false
+          Value: true
+      Enabled: true
+      Name: PointCloud Pipeline
+    - Class: rviz_default_plugins/Map
+      Alpha: 0.42
+      Color Scheme: map
+      Draw Behind: true
+      Enabled: true
+      Name: 4 Occupancy Grid
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /perception/occupancy_grid_map/map
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /perception/occupancy_grid_map/map_updates
+      Use Timestamp: false
+      Value: true
+    - BUS: &centerpoint_style
+        Alpha: 1
+        Color: 255; 80; 70
+      CAR: *centerpoint_style
+      CYCLIST: *centerpoint_style
+      Class: autoware_perception_rviz_plugin/DetectedObjects
+      Display Label: true
+      Display Twist: false
+      Display UUID: false
+      Display Velocity: true
+      Enabled: true
+      Line Width: 0.08
+      MOTORCYCLE: *centerpoint_style
+      Name: 5 CenterPoint Detections
+      Namespaces:
+        label: true
+        shape: true
+        velocity: true
+      Object Fill Type: skeleton
+      PEDESTRIAN: *centerpoint_style
+      Polygon Type: 3d
+      TRAILER: *centerpoint_style
+      TRUCK: *centerpoint_style
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /perception/object_recognition/detection/centerpoint/objects
+      UNKNOWN: *centerpoint_style
+      Value: true
+      Visualization Type: Normal
+    - BUS: &final_style
+        Alpha: 1
+        Color: 60; 220; 120
+      CAR: *final_style
+      CYCLIST: *final_style
+      Class: autoware_perception_rviz_plugin/PredictedObjects
+      Display Label: true
+      Display Predicted Path Confidence: true
+      Display Predicted Paths: true
+      Display UUID: false
+      Display Velocity: true
+      Enabled: true
+      Line Width: 0.1
+      MOTORCYCLE: *final_style
+      Name: 6 Final Predicted Objects
+      Namespaces:
+        label: true
+        predicted path: true
+        shape: true
+        velocity: true
+      Object Fill Type: skeleton
+      PEDESTRIAN: *final_style
+      Polygon Type: 3d
+      TRAILER: *final_style
+      TRUCK: *final_style
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /perception/object_recognition/objects
+      UNKNOWN: *final_style
+      Value: true
+      Visualization Type: Normal
+    - Class: rviz_default_plugins/Image
+      Enabled: false
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: 7 RealSense Color
+      Normalize Range: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /sensing/camera/camera0/image_raw
+      Value: false
+  Enabled: true
+  Global Options:
+    Background Color: 24; 26; 29
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 17
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.06
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
+      Name: Oblique Overview
+      Near Clip Distance: 0.01
+      Pitch: 0.72
+      Target Frame: base_link
+      Value: Orbit (rviz)
+      Yaw: 3.14
+    Saved:
+      - Class: rviz_default_plugins/TopDownOrtho
+        Angle: 0
+        Name: Top Down Occupancy
+        Scale: 25
+        Target Frame: base_link
+        Value: TopDownOrtho (rviz)
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 980
+  Hide Left Dock: false
+  Hide Right Dock: true
+  Width: 1680
+  X: 80
+  Y: 40

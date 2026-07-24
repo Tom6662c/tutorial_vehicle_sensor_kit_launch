@@ -1,26 +1,37 @@
 <launch>
   <arg name="launch_driver" default="true"/>
-  <arg name="camera_type" default="left"/>
+  <arg name="input_color_namespace" default="/sensing/camera/camera/color"/>
+  <arg name="output_camera_namespace" default="/sensing/camera/camera0"/>
 
-  <group>
-    <push-ros-namespace namespace="camera"/>
-    <group>
-      <push-ros-namespace namespace="traffic_light"/>
+  <include if="$(var launch_driver)" file="$(find-pkg-share realsense2_camera)/launch/rs_launch.py">
+    <arg name="enable_color" value="true"/>
+    <arg name="enable_depth" value="false"/>
+    <arg name="enable_infra" value="false"/>
+    <arg name="enable_infra1" value="false"/>
+    <arg name="enable_infra2" value="false"/>
+    <arg name="enable_gyro" value="false"/>
+    <arg name="enable_accel" value="false"/>
+    <arg name="enable_motion" value="false"/>
+  </include>
 
-      <!-- (usb_cam_node is assumed to have launched on logging PC) -->
-      <node pkg="topic_tools" exec="relay" name="tl_camera_info_relay" output="log">
-        <param name="input_topic" value="$(var camera_type)/camera_info"/>
-        <param name="output_topic" value="camera_info"/>
-        <param name="type" value="sensor_msgs/msg/CameraInfo"/>
-        <param name="reliability" value="best_effort"/>
-      </node>
+  <node pkg="topic_tools" exec="relay" name="camera0_camera_info_relay" output="log">
+    <param name="input_topic" value="$(var input_color_namespace)/camera_info"/>
+    <param name="output_topic" value="$(var output_camera_namespace)/camera_info"/>
+    <param name="type" value="sensor_msgs/msg/CameraInfo"/>
+    <param name="reliability" value="best_effort"/>
+  </node>
 
-      <node pkg="topic_tools" exec="relay" name="tl_compressed_image_relay" output="log">
-        <param name="input_topic" value="$(var camera_type)/image_raw/compressed"/>
-        <param name="output_topic" value="image_raw/compressed"/>
-        <param name="type" value="sensor_msgs/msg/CompressedImage"/>
-        <param name="reliability" value="best_effort"/>
-      </node>
-    </group>
-  </group>
+  <node pkg="topic_tools" exec="relay" name="camera0_image_relay" output="log">
+    <param name="input_topic" value="$(var input_color_namespace)/image_raw"/>
+    <param name="output_topic" value="$(var output_camera_namespace)/image_raw"/>
+    <param name="type" value="sensor_msgs/msg/Image"/>
+    <param name="reliability" value="best_effort"/>
+  </node>
+
+  <node pkg="topic_tools" exec="relay" name="camera0_compressed_image_relay" output="log">
+    <param name="input_topic" value="$(var input_color_namespace)/image_raw/compressed"/>
+    <param name="output_topic" value="$(var output_camera_namespace)/image_raw/compressed"/>
+    <param name="type" value="sensor_msgs/msg/CompressedImage"/>
+    <param name="reliability" value="best_effort"/>
+  </node>
 </launch>

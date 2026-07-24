@@ -1,5 +1,7 @@
 <launch>
   <arg name="launch_driver" default="true" description="do launch driver"/>
+  <arg name="launch_camera" default="false" description="do launch real camera driver"/>
+  <arg name="launch_vehicle_velocity_converter" default="false" description="do launch vehicle velocity converter"/>
   <arg name="vehicle_mirror_param_file" description="path to the file of vehicle mirror position yaml"/>
   <arg name="pointcloud_container_name" default="pointcloud_container"/>
   <arg name="vehicle_id" default="$(env VEHICLE_ID default)"/>
@@ -13,9 +15,9 @@
     </include>
 
     <!-- Camera Driver -->
-    <!-- <include file="$(find-pkg-share akm_vehicle_sensor_kit_launch)/launch/camera.launch.xml">
+    <include if="$(var launch_camera)" file="$(find-pkg-share akm_vehicle_sensor_kit_launch)/launch/camera.launch.xml">
       <arg name="launch_driver" value="$(var launch_driver)" />
-    </include> -->
+    </include>
 
     <!-- IMU Driver -->
     <!-- <include file="$(find-pkg-share akm_vehicle_sensor_kit_launch)/launch/imu.launch.xml">
@@ -28,7 +30,7 @@
     </include> -->
 
     <!-- Vehicle Velocity Converter  -->
-    <include file="$(find-pkg-share autoware_vehicle_velocity_converter)/launch/vehicle_velocity_converter.launch.xml">
+    <include if="$(var launch_vehicle_velocity_converter)" file="$(find-pkg-share autoware_vehicle_velocity_converter)/launch/vehicle_velocity_converter.launch.xml">
       <arg name="input_vehicle_velocity_topic" value="/vehicle/status/velocity_status"/>
       <arg name="output_twist_with_covariance" value="/sensing/vehicle_velocity_converter/twist_with_covariance"/>
     </include>

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="map_path" default="$(env HOME)/autoware_map/sample-map-planning"/>
+  <arg name="vehicle_model" default="akm_vehicle"/>
+  <arg name="sensor_model" default="akm_vehicle_sensor_kit"/>
+  <arg name="launch_sensing_driver" default="true" description="disable hardware drivers when replaying a rosbag"/>
+  <arg name="use_sim_time" default="false" description="use rosbag /clock during offline playback"/>
+  <arg name="launch_camera" default="true"/>
+  <arg name="launch_rviz" default="true" description="disable RViz for headless pipeline diagnostics"/>
+  <arg name="rviz_software_rendering" default="true" description="use software OpenGL to avoid the current NVIDIA GLXBadDrawable failure"/>
+  <arg name="lidar_detection_model" default="centerpoint" description="use clustering to isolate CenterPoint load"/>
+  <arg name="downsample_perception_common_pointcloud" default="false" description="optionally reduce point count before perception"/>
+  <arg name="common_downsample_voxel_size" default="0.1" description="isotropic perception voxel size in meters"/>
+  <arg name="publish_test_map_tf" default="true" description="publish identity map to base_link TF for a stationary bench test only"/>
+  <arg name="rviz_config" default="$(find-pkg-share akm_vehicle_sensor_kit_launch)/rviz/akm_perception_demo.rviz"/>
+
+  <!-- Vehicle and sensor descriptions are required for base_link -> velodyne_top. -->
+  <include file="$(find-pkg-share autoware_launch)/launch/autoware.launch.xml">
+    <arg name="map_path" value="$(var map_path)"/>
+    <arg name="vehicle_model" value="$(var vehicle_model)"/>
+    <arg name="sensor_model" value="$(var sensor_model)"/>
+    <arg name="launch_vehicle" value="true"/>
+    <arg name="launch_vehicle_interface" value="false"/>
+    <arg name="launch_system" value="false"/>
+    <arg name="launch_map" value="true"/>
+    <arg name="launch_sensing" value="true"/>
+    <arg name="launch_sensing_driver" value="$(var launch_sensing_driver)"/>
+    <arg name="use_sim_time" value="$(var use_sim_time)"/>
+    <arg name="launch_camera" value="$(var launch_camera)"/>
+    <arg name="launch_localization" value="false"/>
+    <arg name="launch_perception" value="true"/>
+    <arg name="launch_planning" value="false"/>
+    <arg name="launch_control" value="false"/>
+    <arg name="launch_api" value="false"/>
+    <arg name="rviz" value="false"/>
+    <arg name="perception_mode" value="lidar"/>
+    <arg name="lidar_detection_model" value="$(var lidar_detection_model)"/>
+    <arg name="centerpoint_input_pointcloud" value="/sensing/lidar/concatenated/pointcloud_cuda"/>
+    <arg name="centerpoint_container_name" value="/sensing/lidar/centerpoint_cuda_container"/>
+    <arg name="launch_obstacle_segmentation_container" value="true"/>
+    <arg name="obstacle_segmentation_container_name" value="obstacle_segmentation_container"/>
+    <arg name="use_pointcloud_map" value="false"/>
+    <arg name="downsample_perception_common_pointcloud" value="$(var downsample_perception_common_pointcloud)"/>
+    <arg name="common_downsample_voxel_size_x" value="$(var common_downsample_voxel_size)"/>
+    <arg name="common_downsample_voxel_size_y" value="$(var common_downsample_voxel_size)"/>
+    <arg name="common_downsample_voxel_size_z" value="$(var common_downsample_voxel_size)"/>
+    <arg name="use_traffic_light_recognition" value="false"/>
+  </include>
+
+  <!-- Replace this with localization output before any moving-vehicle test. -->
+  <node
+    if="$(var publish_test_map_tf)"
+    pkg="tf2_ros"
+    exec="static_transform_publisher"
+    name="bench_map_to_base_link"
+    args="--x 0 --y 0 --z 0 --yaw 0 --pitch 0 --roll 0 --frame-id map --child-frame-id base_link"
+  >
+    <param name="use_sim_time" value="$(var use_sim_time)"/>
+  </node>
+
+  <group if="$(var launch_rviz)">
+    <group if="$(var rviz_software_rendering)">
+      <set_env name="LIBGL_ALWAYS_SOFTWARE" value="1"/>
+      <node pkg="rviz2" exec="rviz2" name="akm_perception_demo_rviz" args="-d $(var rviz_config)" output="screen">
+        <param name="use_sim_time" value="$(var use_sim_time)"/>
+      </node>
+    </group>
+
+    <group unless="$(var rviz_software_rendering)">
+      <node pkg="rviz2" exec="rviz2" name="akm_perception_demo_rviz" args="-d $(var rviz_config)" output="screen">
+        <param name="use_sim_time" value="$(var use_sim_time)"/>
+      </node>
+    </group>
+  </group>
+</launch>
